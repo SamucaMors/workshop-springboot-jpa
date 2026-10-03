@@ -1,20 +1,36 @@
 package com.samdev.spring_project.resources;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.samdev.spring_project.entities.User;
+import com.samdev.spring_project.services.UserService;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
 	
+	private UserService service;
+	
+	public UserResource(UserService service) {
+		this.service = service;
+	}
+	
 	@GetMapping
-	public ResponseEntity<User> findAll(){
-		User user = new User(1L, "Maria", "maria@gmail.com", "91999999", "12345");
-		return ResponseEntity.ok().body(user);
+	public ResponseEntity<List<User>> findAll(){
+		List<User> list = service.findAll();
+		return ResponseEntity.ok().body(list);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<User> findById(@PathVariable Long id){
+		return ResponseEntity.ok().body(service.findById(id));
 	}
 
 }
