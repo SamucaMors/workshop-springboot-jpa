@@ -35,6 +35,7 @@ public class Order implements Serializable{
 	
 	private Integer orderStatus;
 	
+	
 	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private User client;
@@ -102,6 +103,14 @@ public class Order implements Serializable{
 			this.orderStatus = orderStatus.getCode();
 		}
 		
+	}
+	
+	public Double getTotal() {
+		double sum = 0.0;
+		for(OrderItem x : items) {
+			sum += x.getSubTotal();
+		}
+		return sum;
 	}
 
 	@Override
