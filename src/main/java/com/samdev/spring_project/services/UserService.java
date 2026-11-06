@@ -3,7 +3,10 @@ package com.samdev.spring_project.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.samdev.spring_project.services.exceptions.DatabaseException;
 import com.samdev.spring_project.services.exceptions.ResourceNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.samdev.spring_project.entities.User;
@@ -31,9 +34,17 @@ public class UserService {
 		return repository.save(user);
 	}
 
-	public void delete(Long id){
-		repository.deleteById(id);
+	public void delete(Long id) {
+		if (!repository.existsById(id)) {
+			throw new ResourceNotFoundException(id);
+		}
+		try {
+			repository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException(e.getMessage());
+		}
 	}
+
 	
 	public User update(Long id, User user) {
 		User entity = repository.getReferenceById(id);
