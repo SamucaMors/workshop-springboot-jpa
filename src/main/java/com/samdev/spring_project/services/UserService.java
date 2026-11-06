@@ -3,6 +3,7 @@ package com.samdev.spring_project.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.samdev.spring_project.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.samdev.spring_project.entities.User;
@@ -23,7 +24,7 @@ public class UserService {
 	
 	public User findById(Long id) {
 		Optional<User> obj = repository.findById(id);
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public User insert(User user){
