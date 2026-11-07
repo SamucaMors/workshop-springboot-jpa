@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.samdev.spring_project.services.exceptions.DatabaseException;
 import com.samdev.spring_project.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -47,10 +48,16 @@ public class UserService {
 
 	
 	public User update(Long id, User user) {
-		User entity = repository.getReferenceById(id);
-		updateData(entity, user);
-		return repository.save(entity);
-		
+//		User entity = repository.findById(id)
+//				.orElseThrow(() -> new ResourceNotFoundException(id));
+//		updateData(entity, user);
+		try{
+			User entity = repository.getReferenceById(id);
+			updateData(entity, user);
+			return repository.save(entity);
+		}catch(EntityNotFoundException e){
+			throw new ResourceNotFoundException(id);
+		}
 	}
 	
 	public void updateData(User entity, User user) {
